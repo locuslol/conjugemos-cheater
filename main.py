@@ -560,19 +560,24 @@ class ConjugationUI:
                 if found_subject:
                     break
         
-        # Only check pronoun patterns if no name was found
+        # Check for standalone names
         if not found_subject:
-            words_list = text.split()
-            for subject_name, patterns in subject_patterns.items():
-                for pattern in patterns:
-                    # Check if pattern exists as a standalone word in the word list
-                    if pattern in words_list:
-                        found_subject = subject_name
-                        print(f"  [DEBUG] Found subject '{found_subject}' from pattern '{pattern}'")
-                        break
-                if found_subject:
+            # Look for capitalized words that could be names
+            words_list = original_text.split()
+            tense_keywords = ['Present', 'Perfect', 'Preterite', 'Imperfect', 'Future', 'Conditional', 'Subjunctive', 'Past']
+            
+            for word in words_list:
+                # Skip punctuation and tense keywords
+                clean_word = word.strip('»,.:;!?')
+                if not clean_word or clean_word in tense_keywords:
+                    continue
+                    
+                # Check if it's a capitalized word (likely a name)
+                if clean_word[0].isupper() and len(clean_word) > 1:
+                    found_subject = 'él'
+                    print(f"  [DEBUG] Detected standalone name '{clean_word}' → using 'él' (3rd person singular)")
                     break
-        
+
         words = text.split()
         if 'to' in words:
             to_index = words.index('to')
@@ -609,33 +614,23 @@ class ConjugationUI:
         prompt = f"""You are a Spanish conjugation expert. Conjugate the verb '{verb}' in {tense} tense for the subject '{subject}'.
 
 CRITICAL INSTRUCTIONS:
-1. Provide the COMPLETE conjugated verb form
-2. Use the most common/standard Spanish translation for English verbs
-3. For "to wear" use "llevar" (NOT vestir/vestirse)
-4. For "to understand" use "entender" (NOT comprender)
-5. For reflexive verbs, include the reflexive pronoun (me, te, se, nos, os, se)
-
-Translation guidelines:
-- "to wear" → llevar (llevemos, llevas, etc.)
-- "to understand" → entender (entendamos, entiendes, etc.)
-- "to put on" → ponerse (reflexive)
-- "to dress" → vestirse (reflexive)
-- "to brush oneself" → cepillarse (reflexive)
-- Always use the most commonly taught translation in Spanish classes
+1. Translate the English verb to the MOST COMMON Spanish equivalent used in textbooks
+2. If the English verb contains hints like "(not X)" or "(use Y)", follow those instructions
+3. For reflexive verbs, include the reflexive pronoun (me, te, se, nos, os, se)
+4. Return the COMPLETE conjugated form - for compound tenses, include both parts
 
 Rules:
-- Return ONLY the complete conjugated verb form
-- No explanations, no periods, no extra words
-- Return the FULL conjugation (both parts if compound tense like "han visto", not just "han")
-- Include reflexive pronouns where needed (e.g., "me cepillo", "te cepillas")
+- Return ONLY the conjugated verb form, no explanations
+- For compound tenses like present perfect: include auxiliary + participle (e.g., "han visto")
+- For reflexive verbs: include pronoun (e.g., "me cepillo", "te lavas")
 
 Examples:
 - present perfect, ustedes, see → han visto
 - preterite, yo, eat → comí
-- present subjunctive, nosotros, wear → llevemos
 - present subjunctive, nosotros, understand → entendamos
 - present, tú, brush oneself → te cepillas
 - future, yo, put on → me pondré
+- present subjunctive, nosotros, understand (not comprender) → entendamos
 
 Now conjugate: {tense}, {subject}, {verb}
 
