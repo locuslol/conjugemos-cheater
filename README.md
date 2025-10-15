@@ -67,12 +67,12 @@ Get your free key here → [https://aistudio.google.com/apikey](https://aistudio
 git clone https://github.com/locuslol/conjugemos-cheater.git
 cd conjugemos-cheater
 ```
-Or use the batch file provided in the release to install the requirements.
 
 ### 2. Install Dependencies
 ```bash
 pip install pyautogui pytesseract pillow google-genai pyperclip keyboard
 ```
+Or use the batch file provided in the release to install the requirements.
 
 ### 3. Run the Application
 ```bash
