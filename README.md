@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.ibb.co/B5T5qkt2/New-Project-10.png" alt="Logo" width="200"/>
+  <img src="https://iili.io/KSbjQYF.png" alt="Logo" width="200"/>
 </p>
 
 # ⚡ Conjugemos Cheater
