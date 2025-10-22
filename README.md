@@ -101,10 +101,14 @@ Defines the area the program will “watch” and where it will type.
    - **📍 TOP-LEFT Corner:** Top-left of the question area.  
    - **📍 BOTTOM-RIGHT Corner:** Bottom-right of the question area.  
    - **📍 ANSWER INPUT BOX:** Where the script should click to type.
+---
+
+### ▶️ D. Adjust Manual Tense
+If needed, change the tense depending on the assignment using the dropdown provided.
 
 ---
 
-### ▶️ C. Start Monitoring
+### ▶️ E. Start Monitoring
 Click **“▶ Start Monitoring.”**  
 The status will turn **Active (pulsing green)**.  
 Switch to your Conjugemos tab — the bot will solve and type automatically.  
