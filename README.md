@@ -104,9 +104,11 @@ Defines the area the program will “watch” and where it will type.
 ---
 
 ### ▶️ D. Adjust Manual Tense
-Expand **“▶ Manuel Tense Override.”** 
-If needed, change the tense depending on the assignment using the dropdown provided.
+Expand **“▶ Manuel Tense Override.”**
+Change the tense depending on the assignment using the dropdown provided.
+
 **Otherwise, keep it on auto detect from screenshot if your assignment uses multiple tenses**
+
 ---
 
 ### ▶️ E. Start Monitoring
