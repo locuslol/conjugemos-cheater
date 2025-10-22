@@ -16,7 +16,7 @@ class ConjugationUI:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("Conjugemos Cheater")
-        self.root.geometry("650x750")
+        self.root.geometry("650x800")
         self.root.configure(bg="#0a0a0a")
         self.root.resizable(False, False)
         self.root.attributes('-topmost', True)
@@ -29,6 +29,7 @@ class ConjugationUI:
         self.last_text = ""
         self.api_key = None
         self.model = None
+        self.manual_tense = None  # Store manually selected tense
         
         # Load or prompt for API key
         self.config_file = "conjugemos_config.json"
@@ -166,29 +167,6 @@ class ConjugationUI:
         dialog.transient(self.root)
         dialog.grab_set()
         
-    def animate_startup(self):
-        """Fade in animation"""
-        self.root.attributes('-alpha', 0.0)
-        self.root.update()
-        for i in range(0, 11):
-            self.root.attributes('-alpha', i / 10)
-            self.root.update()
-            time.sleep(0.02)
-        
-    def start_drag(self, event):
-        self.drag_data["x"] = event.x
-        self.drag_data["y"] = event.y
-        self.drag_data["dragging"] = True
-        
-    def stop_drag(self, event):
-        self.drag_data["dragging"] = False
-        
-    def do_drag(self, event):
-        if self.drag_data["dragging"]:
-            x = self.root.winfo_x() + event.x - self.drag_data["x"]
-            y = self.root.winfo_y() + event.y - self.drag_data["y"]
-            self.root.geometry(f"+{x}+{y}")
-        
     def setup_ui(self):
         # Header
         header = tk.Frame(self.root, bg="#1a1a2e", height=100)
@@ -248,6 +226,66 @@ class ConjugationUI:
                                      font=("SF Pro Display", 13, "bold"), 
                                      bg="#16213e", fg="#ffffff")
         self.status_label.pack(side=tk.LEFT)
+        
+        # Tense selector card
+        tense_card = tk.Frame(container, bg="#16213e", relief=tk.FLAT, bd=0, highlightthickness=0)
+        tense_card.pack(fill=tk.X, pady=(0, 20))
+        
+        tense_inner = tk.Frame(tense_card, bg="#16213e")
+        tense_inner.pack(pady=15, padx=20, fill=tk.X)
+        
+        tk.Label(tense_inner, text="Manual Tense Override (Optional)", 
+                font=("SF Pro Display", 10), 
+                bg="#16213e", fg="#888888").pack(anchor=tk.W, pady=(0, 8))
+        
+        tense_options = [
+            "Auto-detect from screenshot",
+            "Present",
+            "Preterite", 
+            "Imperfect",
+            "Future",
+            "Conditional",
+            "Present Perfect",
+            "Past Perfect",
+            "Future Perfect",
+            "Present Subjunctive"
+        ]
+        
+        self.tense_var = tk.StringVar(value="Auto-detect from screenshot")
+        
+        # Use OptionMenu instead of Combobox for better dark theme support
+        tense_menu_frame = tk.Frame(tense_inner, bg="#0f1b2e", bd=0, highlightthickness=0)
+        tense_menu_frame.pack(fill=tk.X, pady=5)
+        
+        self.tense_dropdown = tk.OptionMenu(tense_menu_frame, self.tense_var, *tense_options)
+        self.tense_dropdown.config(
+            bg="#0f1b2e",
+            fg="#ffffff",
+            activebackground="#16213e",
+            activeforeground="#00ffaa",
+            font=("SF Pro Display", 11),
+            relief=tk.FLAT,
+            bd=0,
+            highlightthickness=0,
+            cursor="hand2",
+            anchor="w",
+            padx=12,
+            pady=8
+        )
+        
+        # Style the dropdown menu
+        menu = self.tense_dropdown["menu"]
+        menu.config(
+            bg="#0f1b2e",
+            fg="#ffffff",
+            activebackground="#00ffaa",
+            activeforeground="#0a0a0a",
+            font=("SF Pro Display", 10),
+            relief=tk.FLAT,
+            bd=0
+        )
+        
+        self.tense_dropdown.pack(fill=tk.X, padx=12, pady=5)
         
         # Button container for better spacing
         button_container = tk.Frame(container, bg="#0a0a0a")
@@ -390,6 +428,15 @@ class ConjugationUI:
             self.log("Click 'Change API Key' to add your key", "warning")
             self.show_api_key_dialog()
             return
+        
+        # Get manual tense selection
+        selected_tense = self.tense_var.get()
+        if selected_tense != "Auto-detect from screenshot":
+            self.manual_tense = selected_tense.lower()
+            self.log(f"🎯 Manual tense set: {selected_tense}", "info")
+        else:
+            self.manual_tense = None
+            self.log("🔍 Auto-detecting tense from screenshot", "info")
             
         self.monitoring = True
         self.pulse_status_on()
@@ -398,6 +445,7 @@ class ConjugationUI:
         self.toggle_btn.bind("<Enter>", lambda e: self.toggle_btn.config(bg="#dc2626"))
         self.toggle_btn.bind("<Leave>", lambda e: self.toggle_btn.config(bg="#ef4444"))
         self.setup_btn.config(state=tk.DISABLED)
+        self.tense_dropdown.config(state=tk.DISABLED)
         
         self.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "success")
         self.log("🔥 Monitoring activated! Let's go!", "success")
@@ -406,12 +454,14 @@ class ConjugationUI:
         
     def stop_monitoring(self):
         self.monitoring = False
+        self.manual_tense = None
         self.status_indicator.config(fg="#ff3366")
         self.status_label.config(text="Idle")
         self.toggle_btn.config(text="▶  Start Monitoring", bg="#10b981", activebackground="#059669")
         self.toggle_btn.bind("<Enter>", lambda e: self.toggle_btn.config(bg="#059669"))
         self.toggle_btn.bind("<Leave>", lambda e: self.toggle_btn.config(bg="#10b981"))
         self.setup_btn.config(state=tk.NORMAL)
+        self.tense_dropdown.config(state=tk.NORMAL)
         
         self.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━", "warning")
         self.log("⏸ Monitoring paused", "warning")
@@ -444,6 +494,17 @@ class ConjugationUI:
                     
                     tense, subject, verb = self.parse_conjugation(text)
                     
+                    # Use manual tense if set, otherwise use detected tense
+                    if self.manual_tense:
+                        tense = self.manual_tense
+                        self.log(f"🎯 Using manual tense: {tense}", "info")
+                    
+                    # If missing tense but have subject/verb, it might be incomplete OCR
+                    if not tense and (subject or verb):
+                        self.log("⚠️  Incomplete text detected - waiting for full question...", "warning")
+                        time.sleep(1)
+                        continue
+                    
                     if tense and subject and verb:
                         self.log(f"✓ Parsed → {tense} | {subject} | {verb}", "success")
                         
@@ -452,7 +513,8 @@ class ConjugationUI:
                         # Check if there was an error - don't type errors into the box!
                         if conjugated.startswith("Error:") or "error" in conjugated.lower() or len(conjugated) > 50:
                             self.log(f"❌ API Error: {conjugated}", "error")
-                            self.log("⚠️  Skipping typing - check API quota", "warning")
+                            self.log("⚠️  Will retry in next loop - check API quota", "warning")
+                            # DON'T update last_text so we retry on next iteration
                         else:
                             self.log(f"✨ Answer: {conjugated}", "success")
                             
@@ -470,14 +532,16 @@ class ConjugationUI:
                             
                             self.log("⌨️  Typed successfully!", "success")
                             pyperclip.copy(conjugated)
+                            
+                            # Only update last_text after successful typing
+                            self.last_text = text
                     else:
                         missing = []
                         if not tense: missing.append("tense")
                         if not subject: missing.append("subject")
                         if not verb: missing.append("verb")
                         self.log(f"✗ Parse failed - missing: {', '.join(missing)}", "error")
-                    
-                    self.last_text = text
+                        # Don't update last_text so we can retry parsing
                     
                 time.sleep(0.5)
             except Exception as e:
@@ -486,10 +550,25 @@ class ConjugationUI:
                 
     def extract_text(self, image):
         from PIL import ImageEnhance
+        # Increase contrast for better OCR
         enhancer = ImageEnhance.Contrast(image)
         image = enhancer.enhance(2)
-        text = pytesseract.image_to_string(image, config='--psm 6')
-        return text.strip()
+        
+        # Try multiple OCR configurations for better accuracy
+        configs = [
+            '--psm 6',  # Assume uniform block of text
+            '--psm 7',  # Treat image as single text line
+            '--psm 11'  # Sparse text
+        ]
+        
+        best_text = ""
+        for config in configs:
+            text = pytesseract.image_to_string(image, config=config).strip()
+            # Use the longest result (likely most complete)
+            if len(text) > len(best_text):
+                best_text = text
+        
+        return best_text
         
     def parse_conjugation(self, text):
         print(f"  [DEBUG] === Monitoring Start ===")
@@ -510,7 +589,7 @@ class ConjugationUI:
             'imperfect': ['imperfect'],
             'future': ['future'],
             'conditional': ['conditional'],
-            'subjunctive': ['subjunctive', 'present subjunctive'],
+            'present subjunctive': ['subjunctive', 'present subjunctive'],
             'past perfect': ['past perfect', 'pluperfect'],
             'future perfect': ['future perfect']
         }
@@ -614,10 +693,13 @@ class ConjugationUI:
         prompt = f"""You are a Spanish conjugation expert. Conjugate the verb '{verb}' in {tense} tense for the subject '{subject}'.
 
 CRITICAL INSTRUCTIONS:
-1. Translate the English verb to the MOST COMMON Spanish equivalent used in textbooks
-2. If the English verb contains hints like "(not X)" or "(use Y)", follow those instructions
-3. For reflexive verbs, include the reflexive pronoun (me, te, se, nos, os, se)
-4. Return the COMPLETE conjugated form - for compound tenses, include both parts
+1. If the verb contains "(not X)" - you MUST NOT use verb X. Find an alternative Spanish verb.
+2. If the verb contains "(use Y)" - you MUST use verb Y specifically.
+3. Translate the English verb to the MOST COMMON Spanish equivalent used in textbooks
+4. For reflexive verbs, include the reflexive pronoun (me, te, se, nos, os, se)
+5. Return the COMPLETE conjugated form - for compound tenses, include both parts
+
+IMPORTANT: Look carefully at the verb for any parenthetical instructions like "(not empezar)" or "(use comenzar)" and ALWAYS follow them.
 
 Rules:
 - Return ONLY the conjugated verb form, no explanations
@@ -630,7 +712,8 @@ Examples:
 - present subjunctive, nosotros, understand → entendamos
 - present, tú, brush oneself → te cepillas
 - future, yo, put on → me pondré
-- present subjunctive, nosotros, understand (not comprender) → entendamos
+- present, yo, start (not empezar) → comienzo
+- preterite, él, begin (use comenzar) → comenzó
 
 Now conjugate: {tense}, {subject}, {verb}
 
