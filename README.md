@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://iili.io/KSbjQYF.png" alt="Logo" width="200"/>
+</p>
 
 # ⚡ Conjugemos Cheater
 
@@ -69,6 +72,7 @@ cd conjugemos-cheater
 ```bash
 pip install pyautogui pytesseract pillow google-genai pyperclip keyboard
 ```
+Or use the batch file provided in the release to install the requirements.
 
 ### 3. Run the Application
 ```bash
@@ -114,20 +118,28 @@ The `monitor_loop` function powers the automation, using Gemini for real-time co
 
 ```python
 # Gemini prompt template
-prompt = f"""You are a Spanish conjugation expert. Conjugate the verb '{{verb}}' in {{tense}} tense for the subject '{{subject}}'.
+"""You are a Spanish conjugation expert. Conjugate the verb '{verb}' in {tense} tense for the subject '{subject}'.
 
 CRITICAL INSTRUCTIONS:
-1. Provide the COMPLETE conjugated verb form
-2. Use the most common/standard Spanish translation for English verbs
-3. For "to wear" use "llevar" (NOT vestir/vestirse)
-4. For "to understand" use "entender" (NOT comprender)
-5. For reflexive verbs, include the reflexive pronoun (me, te, se, nos, os, se)
+1. Translate the English verb to the MOST COMMON Spanish equivalent used in textbooks
+2. If the English verb contains hints like "(not X)" or "(use Y)", follow those instructions
+3. For reflexive verbs, include the reflexive pronoun (me, te, se, nos, os, se)
+4. Return the COMPLETE conjugated form - for compound tenses, include both parts
 
 Rules:
-- Return ONLY the conjugated verb form
-- No punctuation, no extra words
-- If compound, include both parts ("han visto", not just "han")
-- Include reflexive pronouns when required ("me cepillo", "te cepillas")
+- Return ONLY the conjugated verb form, no explanations
+- For compound tenses like present perfect: include auxiliary + participle (e.g., "han visto")
+- For reflexive verbs: include pronoun (e.g., "me cepillo", "te lavas")
+
+Examples:
+- present perfect, ustedes, see → han visto
+- preterite, yo, eat → comí
+- present subjunctive, nosotros, understand → entendamos
+- present, tú, brush oneself → te cepillas
+- future, yo, put on → me pondré
+- present subjunctive, nosotros, understand (not comprender) → entendamos
+
+Now conjugate: {tense}, {subject}, {verb}
 
 Answer with ONLY the conjugated form:"""
 ```
