@@ -21,9 +21,9 @@
 **Conjugemos Cheater** automates the process of conjugating Spanish verbs during timed Conjugemos exercises.  
 It acts as a **real-time assistant** by:
 
-1. 📸 **Capturing** the exercise prompt (tense, subject, and verb) from the screen using **PyAutoGUI** and **Tesseract OCR**.  
-2. 🤖 **Solving** the conjugation by sending the details to **Gemini 2.5 Flash** for accurate answers.  
-3. ⌨️ **Typing** the correct conjugation directly into the input box automatically.
+1. **Capturing** the exercise prompt (tense, subject, and verb) from the screen using **PyAutoGUI** and **Tesseract OCR**.  
+2. **Solving** the conjugation by sending the details to **Gemini 2.5 Flash** for accurate answers.  
+3. **Typing** the correct conjugation directly into the input box automatically.
 
 The application features a **modern, top-most GUI** built with **Tkinter** for easy setup and activity monitoring.
 
@@ -31,12 +31,12 @@ The application features a **modern, top-most GUI** built with **Tkinter** for e
 
 ## ✨ Features
 
-- ⚙️ **Real-Time Monitoring:** Continuously scans a user-defined screen region for new questions.  
-- 🤖 **Gemini API Integration:** Uses Gemini 2.5 Flash for context-aware conjugations (handles irregular, reflexive, and compound tenses).  
-- 🧠 **Robust Text Parsing:** Custom pattern matching handles OCR errors and input variations.  
-- ⌨️ **Seamless Typing:** Clicks and types the correct answer automatically.  
-- 🪟 **Modern Tkinter GUI:** Simple interface for managing API keys, regions, and logs.  
-- 💾 **Persistent Configuration:** Saves your Gemini API key in `conjugemos_config.json`.
+- **Real-Time Monitoring:** Continuously scans a user-defined screen region for new questions.  
+- **Gemini API Integration:** Uses Gemini 2.5 Flash for context-aware conjugations (handles irregular, reflexive, and compound tenses).  
+- **Robust Text Parsing:** Custom pattern matching handles OCR errors and input variations.  
+- **Seamless Typing:** Clicks and types the correct answer automatically.  
+- **Modern Tkinter GUI:** Simple interface for managing API keys, regions, and logs.  
+- **Persistent Configuration:** Saves your Gemini API key in `conjugemos_config.json`.
 
 ---
 
@@ -44,17 +44,17 @@ The application features a **modern, top-most GUI** built with **Tkinter** for e
 
 Before running the application, ensure the following are installed:
 
-### 1. 🐍 Python 3.x  
+### 1. Python 3.x  
 Install the latest version of Python from [python.org](https://www.python.org/).
 
-### 2. 🔍 Tesseract OCR  
+### 2. Tesseract OCR  
 Used to convert screenshots into readable text. Must be installed and added to PATH.
 
 - **Windows:** [Tesseract-OCR GitHub Wiki](https://github.com/UB-Mannheim/tesseract/wiki)  
 - **macOS:** `brew install tesseract`  
 - **Linux:** `sudo apt-get install tesseract-ocr`
 
-### 3. 🔑 Gemini API Key  
+### 3. Gemini API Key  
 Required for conjugation logic.  
 Get your free key here → [https://aistudio.google.com/apikey](https://aistudio.google.com/apikey)
 
@@ -85,14 +85,14 @@ python main.py
 
 When the app launches, follow these steps:
 
-### 🧩 A. Configure API Key
+### A. Configure API Key
 If no key is found, a prompt will appear.  
 Paste your Gemini API key and click **“Save & Continue”**.  
 The key is saved in `conjugemos_config.json`.
 
 ---
 
-### 🖼️ B. Setup Monitoring Region
+### B. Setup Monitoring Region
 Defines the area the program will “watch” and where it will type.
 
 1. Open your Conjugemos exercise.  
@@ -103,7 +103,7 @@ Defines the area the program will “watch” and where it will type.
    - **📍 ANSWER INPUT BOX:** Where the script should click to type.
 ---
 
-### ▶️ D. Adjust Manual Tense
+### D. Adjust Manual Tense
 Expand **“▶ Manuel Tense Override.”**
 Change the tense depending on the assignment using the dropdown provided.
 
@@ -111,7 +111,7 @@ Change the tense depending on the assignment using the dropdown provided.
 
 ---
 
-### ▶️ E. Start Monitoring
+### E. Start Monitoring
 Click **“▶ Start Monitoring.”**  
 The status will turn **Active (pulsing green)**.  
 Switch to your Conjugemos tab — the bot will solve and type automatically.  
